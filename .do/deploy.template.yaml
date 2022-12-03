@@ -1,7 +1,7 @@
 spec:
-  name: sample-flask
+  name: ngsklab-flask
   services:
   - name: web
     git:
       branch: main
-      repo_clone_url: https://github.com/digitalocean/sample-flask.git
+      repo_clone_url: https://github.com/tngsk/sample-flask.git
