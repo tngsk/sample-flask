@@ -5,18 +5,22 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 
+DEBUG = os.environ.get("DEBUG")
 
 # db setting
 
-db = pymysql.connect(
-    host='localhost',
-    port=3306,
-    user='root',
-    password='root',
-    db='testdb',
-    charset='utf8',
-    cursorclass=pymysql.cursors.DictCursor,
-)
+db = None
+
+if DEBUG:
+    db = pymysql.connect(
+        host='localhost',
+        port=3306,
+        user='root',
+        password='root',
+        db='testdb',
+        charset='utf8',
+        cursorclass=pymysql.cursors.DictCursor,
+    )
 
 # db access
 
@@ -47,6 +51,5 @@ def post(data=None):
     return response
 
 if __name__ == "__main__":
-    DEBUG = os.environ.get("DEBUG")
     if DEBUG:
         app.run(debug=True)
