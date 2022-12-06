@@ -6,3 +6,4 @@ itsdangerous
 MarkupSafe
 
 gunicorn
+PyMySQL
