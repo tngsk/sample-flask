@@ -6,3 +6,6 @@ itsdangerous
 MarkupSafe
 
 gunicorn
+flask-admin
+SQLAlchemy
+flask-sqlalchemy
