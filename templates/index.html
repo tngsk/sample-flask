@@ -3,4 +3,8 @@
 <h3>Hello Flask!</h3>
 <div>name = {{ name }}</div>
 <div>data = {{ data }}</div>
+
+{% for item in data %}
+<li>{{item}}</li>
+{% endfor %}
 {% endblock %}
