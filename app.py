@@ -5,104 +5,204 @@ from flask import Flask, g, render_template, request
 
 app = Flask(__name__)
 
-DEBUG = os.environ.get("DEBUG")
-
+# -------------------------------------------------------
 # db setting
-def get_db():
-    if 'db' not in g:
-        g.db = sqlite3.connect("db.sqlite")
-    return g.db
+# -------------------------------------------------------
+def rino_get_db():
+    if 'rino_db' not in g:
+        g.rino_db = sqlite3.connect("rino_db.sqlite")
+    return g.rino_db
+
+# -------------------------------------------------------
+# db setting
+# -------------------------------------------------------
+def yuki_get_db():
+    if 'yuki_db' not in g:
+        g.yuki_db = sqlite3.connect("yuki_db.sqlite")
+    return g.yuki_db
+
+# -------------------------------------------------------
+# db setting
+# -------------------------------------------------------
+def nachi_get_db():
+    if 'nachi_db' not in g:
+        g.nachi_db = sqlite3.connect("nachi_db.sqlite")
+    return g.nachi_db
 
 
-@app.route('/')
-def index():
+# -------------------------------------------------------
+# トップページ
+# -------------------------------------------------------
+@app.route('/rino/')
+def rino_index():
 
-    db = get_db()
-
-    cursor = db.execute("select * from データリスト order by コード")
+    # 保存してあるデータを取り出す
+    db = rino_get_db()
+    cursor = db.execute("select * from 保管場所 order by コード")
     data = cursor.fetchall()
     db.close()
 
-    name = "You"
-    title = "Hello from app"
-    response = render_template(
-        "index.html",
-        title=title,
-        name=name,
-        data=data)
-    return response
+    # ページ内容をきめる
+    return render_template("rino_index.html", memo=data[-1][1])
+
+# -------------------------------------------------------
+# トップページ
+# -------------------------------------------------------
+@app.route('/yuki/')
+def yuki_index():
+
+    # 保存してあるデータを取り出す
+    db = yuki_get_db()
+    cursor = db.execute("select * from 保管場所 order by コード")
+    data = cursor.fetchall()
+    db.close()
+
+    # ページ内容をきめる
+    return render_template("yuki_index.html", memo=data[-1][1])
+
+# -------------------------------------------------------
+# トップページ
+# -------------------------------------------------------
+@app.route('/nachi/')
+def nachi_index():
+
+    # 保存してあるデータを取り出す
+    db = nachi_get_db()
+    cursor = db.execute("select * from 保管場所 order by コード")
+    data = cursor.fetchall()
+    db.close()
+
+    # ページ内容をきめる
+    return render_template("nachi_index.html", memo=data[-1][1])
 
 
-@app.route('/urlparam/<data>')
-def urlparam(data=None):
-    response = render_template(
-        "index.html",
-        data=data,
-    )
-    return response
-
-
-@app.route('/post/',methods=["POST"])
-def post():
-    user_id = request.form["userid"]
-    post_data = request.form["text"]
-
-    db = get_db()
-    cursor = db.execute("select MAX(コード) AS max_code from データリスト")
+# -------------------------------------------------------
+# データ登録
+# -------------------------------------------------------
+@app.route('/rino/save/',methods=["POST"])
+def rino_save():
+    data = request.form["memo"]
+    hito = request.form["hito"]    
+    # データベースの空き場所を探す
+    db = rino_get_db()
+    cursor = db.execute("select MAX(コード) AS max_code from 保管場所")
     for row in cursor:
         new_code = row[0] + 1
     cursor.close()
-
-    sql = "INSERT INTO データリスト(コード, テキスト, 値) values ({}, '{}', {})".format(new_code, post_data, 100)
+    
+    # 空いてる場所に保管する
+    sql = "INSERT INTO 保管場所(コード, メモ, 人) values ({}, '{}', '{}')".format(new_code, data, hito)
     db.execute(sql)
     db.commit()
 
-    cursor = db.execute("select * from データリスト order by コード")
+    # とってくる
+    cursor = db.execute("select * from 保管場所 order by コード")
     data = cursor.fetchall()
     db.close()
 
     response = render_template(
-        "index.html",
-        name=user_id,
-        data=data,
+        "rino_index.html",
+        memo=data[-1][1]
     )
     return response
 
+# -------------------------------------------------------
+# データ登録
+# -------------------------------------------------------
+@app.route('/yuki/save/',methods=["POST"])
+def yuki_save():
+    data = request.form["memo"]
+    hito = request.form["hito"]    
+    # データベースの空き場所を探す
+    db = yuki_get_db()
+    cursor = db.execute("select MAX(コード) AS max_code from 保管場所")
+    for row in cursor:
+        new_code = row[0] + 1
+    cursor.close()
+    
+    # 空いてる場所に保管する
+    sql = "INSERT INTO 保管場所(コード, メモ, 人) values ({}, '{}', '{}')".format(new_code, data, hito)
+    db.execute(sql)
+    db.commit()
 
-@app.route('/form/')
-def form():
-    db = get_db()
+    # とってくる
+    cursor = db.execute("select * from 保管場所 order by コード")
+    data = cursor.fetchall()
+    db.close()
 
     response = render_template(
-        "form.html",
+        "yuki_index.html",
+        memo=data[-1][1]
     )
     return response
 
+# -------------------------------------------------------
+# データ登録
+# -------------------------------------------------------
+@app.route('/nachi/save/',methods=["POST"])
+def nachi_save():
+    data = request.form["memo"]
+    hito = request.form["hito"]    
+    # データベースの空き場所を探す
+    db = nachi_get_db()
+    cursor = db.execute("select MAX(コード) AS max_code from 保管場所")
+    for row in cursor:
+        new_code = row[0] + 1
+    cursor.close()
+    
+    # 空いてる場所に保管する
+    sql = "INSERT INTO 保管場所(コード, メモ, 人) values ({}, '{}', '{}')".format(new_code, data, hito)
+    db.execute(sql)
+    db.commit()
+
+    # とってくる
+    cursor = db.execute("select * from 保管場所 order by コード")
+    data = cursor.fetchall()
+    db.close()
+
+    response = render_template(
+        "nachi_index.html",
+        memo=data[-1][1]
+    )
+    return response
+
+# -------------------------------------------------------
+# 最初にやる データベースを作る
+# -------------------------------------------------------
 @app.route('/init_table/')
 def init_table():
-    db = get_db()
+    db = rino_get_db()
     # テーブル作成
-    db.execute("CREATE TABLE データリスト(コード INTEGER PRIMARY KEY, テキスト STRING, 値 INTEGER)")
+    db.execute("CREATE TABLE 保管場所(コード INTEGER PRIMARY KEY, メモ STRING, 人 STRING)")
     # テーブルにデータを追加
-    db.execute("""INSERT INTO データリスト(コード, テキスト, 値)
-        values(0, 'SQLiteのテストデータ1', 100),
-        values(1, 'SQLiteのテストデータ2', 200),
-        values(2, 'SQLiteのテストデータ3', 300),
-        values(3, 'SQLiteのテストデータ4', 400),
+    db.execute("""INSERT INTO 保管場所(コード, メモ, 人)
+        values (0, 'これまで起きた出来事や思ったことをメモしよう', '人')
         """)
     db.commit()
 
-    return render_template("index.html")
-
-
-@app.route('/drop_table/')
-def drop_table():
-    db = get_db()
+    db2 = yuki_get_db()
     # テーブル作成
-    db.execute("DROP TABLE データリスト")
+    db2.execute("CREATE TABLE 保管場所(コード INTEGER PRIMARY KEY, メモ STRING, 人 STRING)")
+    # テーブルにデータを追加
+    db2.execute("""INSERT INTO 保管場所(コード, メモ, 人)
+        values (0, 'これまで起きた出来事や思ったことをメモしよう', '人')
+        """)
+    db2.commit()
 
-    return render_template("index.html")
+    db3 = nachi_get_db()
+    # テーブル作成
+    db3.execute("CREATE TABLE 保管場所(コード INTEGER PRIMARY KEY, メモ STRING, 人 STRING)")
+    # テーブルにデータを追加
+    db3.execute("""INSERT INTO 保管場所(コード, メモ, 人)
+        values (0, 'これまで起きた出来事や思ったことをメモしよう', '人')
+        """)
+    db3.commit()
 
+    return render_template("rino_index.html")
+
+# -------------------------------------------------------
+# 絶対いる
+# -------------------------------------------------------
 if __name__ == "__main__":
-    if DEBUG:
-        app.run(debug=True)
+    # if DEBUG:
+    app.run(debug=True)

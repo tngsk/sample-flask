@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }}</title>
+  <link rel="stylesheet" href="/static/CSS/style.css">
+</head>
+<body>
+
+<!-- <h3>メモです</h3> -->
+
+<!-- s -->
+<div class="tabbox">
+  
+  <input type="radio" name="tabset" id="tabcheck1" checked><label for="tabcheck1" class="tab">NACHI</label>
+  <input type="radio" name="tabset" id="tabcheck2"        ><label for="tabcheck2" class="tab">RINO</label>
+  <input type="radio" name="tabset" id="tabcheck3"        ><label for="tabcheck3" class="tab">YUKI</label>
+  
+  
+  <div class="tabcontent" id="tabcontent1">
+    <form action="/nachi/save" method="post">
+    <div class="btn_area">
+      <input type="submit" name="btn_confirm" value="保存">
+      <input type="hidden" value="NACHI" name="hito">
+    </div>
+    <textarea id="memo" name="memo" placeholder="これまで起きた出来事や思ったことをメモしよう">{{ memo }}</textarea>
+  </form>
+  </div>
+
+   <div class="tabcontent" id="tabcontent2">
+
+
+    <!-- <form action="/save" method="post"> -->
+    <div class="btn_area">
+      <input type="submit" name="btn_confirm" value="保存">
+      <input type="hidden" value="YUKI" name="hito">
+    </div>
+    <textarea id="memo" name="memo" placeholder="これまで起きた出来事や思ったことをメモしよう">{{ memo }}</textarea>
+  <!-- </form> -->
+
+
+  </div>
+   <div class="tabcontent" id="tabcontent3">
+    <!-- <form action="/save" method="post"> -->
+      <div class="btn_area">
+        <input type="submit" name="btn_confirm" value="保存">
+        <input type="hidden" value="NACHI" name="hito">
+      </div>
+      <textarea id="memo" name="memo" placeholder="これまで起きた出来事や思ったことをメモしよう">{{ memo }}</textarea>
+    <!-- </form> -->
+    </div>
+ </div>
+
+
+
+
+{% for item in data %}
+<li>{{item}}</li>
+{% endfor %}
+
+</body>
+</html>
